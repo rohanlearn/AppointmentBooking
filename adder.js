@@ -1,3 +1,4 @@
+
 window.onload = loader
 var form = document.querySelector("#myForm")
 var adder = document.getElementById('items');
@@ -9,7 +10,7 @@ var filter = document.getElementById("search");
 
 function loader(){
     var obja ={}
-    axios.get("https://crudcrud.com/api/c200926f561f444c89343640d56562af/appointmentData")
+    axios.get("https://crudcrud.com/api/23aa9b1ab84a4b8882f794b0d087302d/appointmentData")
     .then((req)=>{
         obja = req.data
         
@@ -40,7 +41,7 @@ function loader(){
     deletion(event,id)
    });
    editbtn.addEventListener('click',(event)=>{
-    edition(event,object)
+    edition(event,id)
    });
    li.appendChild(editbtn);
    li.appendChild(dltbtn);
@@ -82,9 +83,9 @@ function addtocrudcrud(e){
     let myobj ={      name:name,        email:email
    }
    var id = 0
-   axios.post("https://crudcrud.com/api/c200926f561f444c89343640d56562af/appointmentData/",myobj)
-   .then((msg)=>{
-    id = msg.data
+    axios.post("https://crudcrud.com/api/23aa9b1ab84a4b8882f794b0d087302d/appointmentData/",myobj)
+    .then((msg)=>{
+     id = msg.data
     
     
    })
@@ -115,7 +116,7 @@ function addtocrudcrud(e){
     deletion(event,id)
    });
    editbtn.addEventListener('click',(event)=>{
-    edition(event,object)
+    edition(event,id)
    });
    li.appendChild(editbtn);
    li.appendChild(dltbtn);
@@ -138,7 +139,7 @@ function deletion(e,object){
  if (e.target.id=="delete"){
    if (confirm(`Are you sure you want to delete the User ${object.name} ?`)){
     var p = e.target.parentElement;
-    axios.delete(`https://crudcrud.com/api/c200926f561f444c89343640d56562af/appointmentData/${object._id}`)
+    axios.delete(`https://crudcrud.com/api/23aa9b1ab84a4b8882f794b0d087302d/appointmentData/${object._id}`)
     adder.removeChild(p);
 }
  }
@@ -149,13 +150,96 @@ function edition(e,object){
   if (e.target.id=="edit"){
 
     var li = e.target.parentElement;
+
     
+   
+    
+    var obaj = object
     var name=object.name;
     var email=object.email;
+    var idd= object._id
+    
+    
+    
+    var b = `
+    Name: <input id="current-name" type="text" value="${name}" style="display:inline-block;width:60%"/><br> 
+    Email: <input id="current-email" type="text" value="${email}" style="display:inline-block;width:60%"/><br>
+    <button id="submit" class="btn btn-outline-dark btn-sm float-right delete" >Submit</button>
+  `
+    li.innerHTML = b
+    
+    var submit = document.getElementById("submit")
+    submit.addEventListener("click",function(e){
+        e.preventDefault()
+        if(confirm("are you sure you want to edit the user ?")){
+        var Name = document.getElementById("current-name").value
+        var Email = document.getElementById("current-email").value
+        var obj={
+            name:Name,
+            email:Email
+        }
+        li = e.target.parentElement
+        axios.put(`https://crudcrud.com/api/23aa9b1ab84a4b8882f794b0d087302d/appointmentData/${idd}`,obj)
+
+        while (li.firstChild) {
+            li.removeChild(li.firstChild);
+          }
+        object = obj
+           
+            
+                   
+       
+       
+       var Name = document.createTextNode("Name: "+object.name+"," ) ;
+       var Email =  document.createTextNode(" Email: "+object.email);
+      
+       var dltbtn = document.createElement("button");
+       var editbtn = document.createElement('button');
+       
+       li.appendChild(Name);
+       li.appendChild(document.createElement("br"));
+       li.appendChild(Email);
+       li.appendChild(document.createElement("br"));
+       editbtn.appendChild(document.createTextNode("Edit"));
+       dltbtn.appendChild(document.createTextNode("Delete"));
+       dltbtn.id="delete"
+       editbtn.id="edit"
+       editbtn.className="btn btn-outline-dark btn-sm float-right delete";
+       dltbtn.className="btn btn-danger btn-sm float-right delete";
+       
+       dltbtn.addEventListener("click",(event)=>{
+        deletion(event,obaj)
+       });
+       editbtn.addEventListener('click',(event)=>{
+        edition(event,obaj)
+       });
+       li.appendChild(editbtn);
+       li.appendChild(dltbtn);
+       document.getElementById('name').value=""
+   document.getElementById('email').value=""
+    
+       
+       
+       
+       
+    
+                
+    
+            
+            
+        
+
+    }
 
 
-    localStorage.removeItem(object.email);
-    adder.removeChild(li);
+
+        
+
+        
+        
+    })
+    
+    
     
 
  }
